@@ -28,20 +28,18 @@
     </nav>
     <div class="container">
         <!-- Hero Media Slider -->
-        <section class="media-wrapper">
-            <button class="media-prev" aria-label="Previous">&#10094;</button>
-            <div class="media-slider">
-                <img src="images/riseslide1.jpg" alt="Empowering Youth" class="media-slide active">
-                <img src="images/riseslide2.jpg" alt="Community Health" class="media-slide">
-                <img src="images/rriseslide3.jpg" alt="Sustainable Projects" class="media-slide">
-                <div class="media-overlay">
-                    <h1>Empowering Communities</h1>
-                    <p>Together, we rise for a better tomorrow.</p>
-                    <a href="join.html" class="hero-btn"><i class="bx bx-user-plus"></i> Get Involved</a>
-                </div>
+        <button class="media-prev" aria-label="Previous">&#10094;</button>  
+        <div class="media-slider">
+            <img src="images/riseslide1.jpg" alt="Empowering Youth" class="media-slide active">
+            <img src="images/riseslide2.jpg" alt="Community Health" class="media-slide">
+            <img src="images/rriseslide3.jpg" alt="Sustainable Projects" class="media-slide">
+            <div class="media-overlay">
+                <h1>Empowering Communities</h1>
+                <p>Together, we rise for a better tomorrow.</p>
+                <a href="join.html" class="hero-btn"><i class="bx bx-user-plus"></i> Get Involved</a>
             </div>
-            <button class="media-next" aria-label="Next">&#10095;</button>
-        </section>
+        </div>
+        <button class="media-next" aria-label="Next">&#10095;</button>
         <!-- About Us Section with Image and Feature Cards -->
         <section class="home-row1" >
             <img src="about-hero.jpg" alt="About RiseUp" >
@@ -190,10 +188,33 @@
         </div>
     </footer>
     <script>
-    // Media slider functionality
+    // Navbar toggle (collapsible)
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-item');
+    navToggle.addEventListener('click', function() {
+        const expanded = navToggle.getAttribute('aria-expanded') === 'true' || false;
+        navToggle.setAttribute('aria-expanded', !expanded);
+        navMenu.classList.toggle('active');
+        // Change icon
+        navToggle.innerHTML = navMenu.classList.contains('active')
+            ? '<i class="bx bx-x"></i>'
+            : '<i class="bx bx-menu"></i>';
+    });
+    // Optional: close nav when a link is clicked (mobile)
+    document.querySelectorAll('.nav-item a').forEach(link => {
+        link.addEventListener('click', () => {
+            if(window.innerWidth <= 900 && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                navToggle.setAttribute('aria-expanded', false);
+                navToggle.innerHTML = '<i class="bx bx-menu"></i>';
+            }
+        });
+    });
+    </script>
+    <!-- Place this script just before </body> -->
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
     const slides = document.querySelectorAll('.media-slide');
-    const prevBtn = document.querySelector('.media-prev');
-    const nextBtn = document.querySelector('.media-next');
     let currentSlide = 0;
     let sliderInterval;
 
@@ -221,47 +242,73 @@
         clearInterval(sliderInterval);
     }
 
-    prevBtn.addEventListener('click', () => {
-        prevSlide();
-        stopSlider();
-        startSlider();
-    });
+    // Pause on hover
+    const slider = document.querySelector('.media-slider');
+    if (slider) {
+        slider.addEventListener('mouseenter', stopSlider);
+        slider.addEventListener('mouseleave', startSlider);
 
-    nextBtn.addEventListener('click', () => {
-        nextSlide();
-        stopSlider();
-        startSlider();
-    });
+        // Manual swipe/drag support
+        let startX = null;
+        let isDragging = false;
 
-    // Pause slider on hover
-    document.querySelector('.media-wrapper').addEventListener('mouseenter', stopSlider);
-    document.querySelector('.media-wrapper').addEventListener('mouseleave', startSlider);
+        slider.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            startX = e.clientX;
+        });
+
+        slider.addEventListener('mouseup', function(e) {
+            if (!isDragging) return;
+            let diff = e.clientX - startX;
+            if (diff > 50) {
+                prevSlide();
+            } else if (diff < -50) {
+                nextSlide();
+            }
+            isDragging = false;
+        });
+
+        slider.addEventListener('mouseleave', function() {
+            isDragging = false;
+        });
+
+        // Touch support for mobile
+        let touchStartX = null;
+        slider.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        slider.addEventListener('touchend', function(e) {
+            if (touchStartX === null) return;
+            let touchEndX = e.changedTouches[0].clientX;
+            let diff = touchEndX - touchStartX;
+            if (diff > 50) {
+                prevSlide();
+            } else if (diff < -50) {
+                nextSlide();
+            }
+            touchStartX = null;
+        });
+    }
+
+    // Manual navigation with arrows if present
+    const prevBtn = document.querySelector('.media-prev');
+    const nextBtn = document.querySelector('.media-next');
+    if (prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            stopSlider();
+            startSlider();
+        });
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            stopSlider();
+            startSlider();
+        });
+    }
 
     showSlide(currentSlide);
     startSlider();
-
-    // Navbar toggle (collapsible)
-    const navToggle = document.querySelector('.nav-toggle');
-    const navMenu = document.querySelector('.nav-item');
-    navToggle.addEventListener('click', function() {
-        const expanded = navToggle.getAttribute('aria-expanded') === 'true' || false;
-        navToggle.setAttribute('aria-expanded', !expanded);
-        navMenu.classList.toggle('active');
-        // Change icon
-        navToggle.innerHTML = navMenu.classList.contains('active')
-            ? '<i class="bx bx-x"></i>'
-            : '<i class="bx bx-menu"></i>';
-    });
-    // Optional: close nav when a link is clicked (mobile)
-    document.querySelectorAll('.nav-item a').forEach(link => {
-        link.addEventListener('click', () => {
-            if(window.innerWidth <= 900 && navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                navToggle.setAttribute('aria-expanded', false);
-                navToggle.innerHTML = '<i class="bx bx-menu"></i>';
-            }
-        });
-    });
-    </script>
+});
+</script>
 </body>
 </html>
