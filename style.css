@@ -62,7 +62,7 @@ body {
 
 .nav-toggle {
     display: none;
-    background: white;
+    background: rgba(0,0,0,0.04);
     border: none;
     font-size: 2.2rem;
     color: var(--card-bg); /* Use card-bg for toggle bars */
@@ -152,7 +152,7 @@ body {
         top: 100%;
         left: 0;
         width: 100vw;
-        background: var(--footer-color); /* Use footer color for nav background */
+        background: rgba(0,0,0,0.04); /* Use footer color for nav background */
         box-shadow: 0 8px 24px rgba(0,0,0,0.07);
         padding: 1.5rem 0;
         z-index: 25;
